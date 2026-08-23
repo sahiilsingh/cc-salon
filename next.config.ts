@@ -1,13 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Output standalone for optimized production builds
-  output: "standalone",
-  
   // Image optimization
   images: {
     domains: [],
-    unoptimized: true, // For Vercel static export compatibility
+    unoptimized: true,
   },
   
   // Security headers
@@ -35,30 +32,11 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // Block admin routes from being embedded
         source: "/admin/(.*)",
         headers: [
           {
             key: "X-Robots-Tag",
             value: "noindex, nofollow",
-          },
-        ],
-      },
-    ];
-  },
-
-  // Redirects
-  async redirects() {
-    return [
-      {
-        source: "/admin",
-        destination: "/admin/login",
-        permanent: false,
-        has: [
-          {
-            type: "cookie",
-            key: "cc_salon_auth",
-            value: undefined,
           },
         ],
       },
