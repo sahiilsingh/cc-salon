@@ -1,0 +1,221 @@
+// C&C House of Hair & Beauty Salon - Database Schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Users (Admin/Staff) ───────────────────────────────────────
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  phone     String?
+  role      String   @default("STAFF") // OWNER, STAFF
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  auditLogs AuditLog[]
+  blackouts Blackout[]
+}
+
+// ─── Customers ─────────────────────────────────────────────────
+model Customer {
+  id               String   @id @default(cuid())
+  name             String
+  normalizedPhone  String   @unique
+  email            String?
+  marketingConsent Boolean  @default(false)
+  notes            String?
+  createdAt        DateTime @default(now())
+
+  bookings Booking[]
+}
+
+// ─── Services ──────────────────────────────────────────────────
+model Service {
+  id                   String   @id @default(cuid())
+  slug                 String   @unique
+  name                 String
+  category             String   // HAIR, COLOUR_TREATMENTS, SKIN_BEAUTY, NAILS_MAKEUP
+  shortDescription     String?
+  longDescription      String?
+  durationMin          Int      @default(30)
+  bufferMin            Int      @default(10)
+  priceType            String   @default("CONSULTATION") // FIXED, CONSULTATION
+  priceInr             Int      @default(0) // stored in paise
+  consultationRequired Boolean  @default(false)
+  imageUrl             String?
+  isActive             Boolean  @default(false) // draft by default
+  needsReview          Boolean  @default(true)
+  sortOrder            Int      @default(0)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  bookings Booking[]
+}
+
+// ─── Offers ────────────────────────────────────────────────────
+model Offer {
+  id              String   @id @default(cuid())
+  title           String
+  description     String?
+  terms           String?
+  discountType    String   @default("PERCENTAGE") // PERCENTAGE, FIXED_AMOUNT, NONE
+  discountValue   Int      @default(0) // percentage or paise
+  startsAt        DateTime?
+  endsAt          DateTime?
+  isPublished     Boolean  @default(false)
+  eligibleCategory String? // null means all categories
+  promoCode       String?  @unique
+  maxRedemptions  Int?
+  currentRedemptions Int   @default(0)
+  sortOrder       Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  bookings Booking[]
+}
+
+// ─── Salon Settings (key-value) ────────────────────────────────
+model SalonSetting {
+  key       String   @id
+  value     String
+  type      String   @default("STRING") // STRING, NUMBER, BOOLEAN, JSON
+  updatedBy String?
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Business Hours ────────────────────────────────────────────
+model BusinessHour {
+  id         String  @id @default(cuid())
+  weekday    Int     // 0=Sunday, 6=Saturday
+  openTime   String  // "09:00"
+  closeTime  String  // "22:00"
+  isClosed   Boolean @default(false)
+  splitBreakStart String? // "13:00"
+  splitBreakEnd   String? // "14:00"
+}
+
+// ─── Blackout Dates ────────────────────────────────────────────
+model Blackout {
+  id        String   @id @default(cuid())
+  startsAt  DateTime
+  endsAt    DateTime
+  reason    String?
+  createdBy String?
+  
+  creator   User?    @relation(fields: [createdBy], references: [id])
+}
+
+// ─── Bookings ──────────────────────────────────────────────────
+model Booking {
+  id              String   @id @default(cuid())
+  publicReference String   @unique
+  customerId      String
+  serviceId       String
+  offerId         String?
+  startsAt        DateTime
+  endsAt          DateTime
+  timezone        String   @default("Asia/Kolkata")
+  status          String   @default("DRAFT") // DRAFT, HOLD_CREATED, PAYMENT_PENDING, PAID, CONFIRMED, COMPLETED, CANCELLED, NO_SHOW, MANUAL_REVIEW
+  paymentStatus   String   @default("PENDING") // PENDING, CREATED, AUTHORIZED, CAPTURED, FAILED, REFUNDED, MANUAL_REVIEW
+  subtotalInr     Int      @default(0) // paise
+  discountInr     Int      @default(0) // paise
+  totalInr        Int      @default(0) // paise
+  customerNotes   String?
+  internalNotes   String?
+  source          String   @default("WEB") // WEB, CHATBOT, ADMIN, PHONE
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  customer Customer @relation(fields: [customerId], references: [id])
+  service  Service  @relation(fields: [serviceId], references: [id])
+  offer    Offer?   @relation(fields: [offerId], references: [id])
+  hold     BookingHold?
+  payments Payment[]
+  notifications NotificationEvent[]
+}
+
+// ─── Booking Holds ─────────────────────────────────────────────
+model BookingHold {
+  id        String   @id @default(cuid())
+  bookingId String   @unique
+  startsAt  DateTime
+  expiresAt DateTime
+  status    String   @default("ACTIVE") // ACTIVE, RELEASED, EXPIRED, CONVERTED
+
+  booking Booking @relation(fields: [bookingId], references: [id])
+}
+
+// ─── Payments ──────────────────────────────────────────────────
+model Payment {
+  id                 String   @id @default(cuid())
+  bookingId          String
+  provider           String   @default("MOCK") // MOCK, RAZORPAY
+  providerOrderId    String?
+  providerPaymentId  String?
+  amountInr          Int      // paise
+  currency           String   @default("INR")
+  status             String   @default("CREATED") // CREATED, AUTHORIZED, CAPTURED, FAILED, REFUNDED, PARTIALLY_REFUNDED, MANUAL_REVIEW
+  signatureVerified  Boolean  @default(false)
+  rawEventHash       String?
+  idempotencyKey     String?  @unique
+  capturedAt         DateTime?
+  createdAt          DateTime @default(now())
+
+  booking Booking @relation(fields: [bookingId], references: [id])
+}
+
+// ─── Notification Events ───────────────────────────────────────
+model NotificationEvent {
+  id                String   @id @default(cuid())
+  bookingId         String
+  channel           String   // WHATSAPP, SMS, EMAIL
+  template          String
+  recipient         String
+  status            String   @default("PENDING") // PENDING, SENT, DELIVERED, FAILED, MOCKED
+  providerMessageId String?
+  error             String?
+  sentAt            DateTime?
+  createdAt         DateTime @default(now())
+
+  booking Booking @relation(fields: [bookingId], references: [id])
+}
+
+// ─── Chat Sessions ─────────────────────────────────────────────
+model ChatSession {
+  id               String   @id @default(cuid())
+  sessionToken     String   @unique
+  stateJson        String   @default("{}")
+  lastMessageAt    DateTime @default(now())
+  handoffRequested Boolean  @default(false)
+}
+
+// ─── Audit Log ─────────────────────────────────────────────────
+model AuditLog {
+  id           String   @id @default(cuid())
+  actorId      String?
+  action       String
+  entityType   String
+  entityId     String?
+  metadataJson String?
+  createdAt    DateTime @default(now())
+
+  actor User? @relation(fields: [actorId], references: [id])
+}
+
+// ─── Media Assets ──────────────────────────────────────────────
+model MediaAsset {
+  id          String   @id @default(cuid())
+  url         String
+  altText     String?
+  type        String   @default("IMAGE") // IMAGE, VIDEO
+  focalPoint  String?  // "50,50" format
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
