@@ -48,20 +48,16 @@ export default function GalleryPage() {
           ))}
         </div>
 
-        {/* Gallery Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-          {filteredImages.map((image) => (
-            <div key={image.id} className="relative aspect-square rounded-2xl overflow-hidden bg-sand flex flex-col items-center justify-center border border-sand/50 group">
-              {/* This would be an actual next/image component when images are available */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-                <span className="text-white font-body font-medium">{image.category}</span>
-              </div>
-              <svg className="w-12 h-12 text-ink/20 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-              </svg>
-              <span className="text-sm font-medium text-ink/40 font-body">Owner-approved image</span>
-            </div>
-          ))}
+        <div className="bg-sand rounded-2xl p-16 text-center max-w-3xl mx-auto border border-espresso/10 mb-16">
+          <span className="text-5xl block mb-6">📸</span>
+          <h3 className="font-display text-3xl text-ink mb-4">Our gallery is being refreshed</h3>
+          <p className="text-espresso/70 mb-8 max-w-xl mx-auto text-lg font-body">
+            We are curating a collection of our finest transformations and studio moments. 
+            In the meantime, follow @thecandcsalon on Instagram for our latest work.
+          </p>
+          <a href="https://www.instagram.com/thecandcsalon/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-8 py-3 border border-ink text-ink font-body font-medium rounded hover:bg-ink hover:text-white transition-colors">
+            Follow us on Instagram
+          </a>
         </div>
 
         <div className="text-center bg-blush/30 rounded-3xl p-12 border border-blush/50">

@@ -96,26 +96,44 @@ export default function BookPage() {
 
               <div className="grid gap-4 md:grid-cols-2 mt-6">
                 {filteredServices.map(service => (
-                  <div 
+                  <button 
                     key={service.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={selectedService?.id === service.id}
+                    data-selected={selectedService?.id === service.id}
                     onClick={() => setSelectedService(service)}
-                    className={`p-4 border rounded-xl cursor-pointer transition-colors ${
+                    className={`p-4 border rounded-xl text-left cursor-pointer transition-all outline-none focus-visible:ring-2 focus-visible:ring-terracotta ${
                       selectedService?.id === service.id 
-                        ? 'border-terracotta bg-blush/20' 
-                        : 'border-gray-200 hover:border-terracotta/50'
+                        ? 'border-terracotta bg-blush/10 shadow-sm ring-1 ring-terracotta relative' 
+                        : 'border-gray-200 hover:border-terracotta/50 bg-white'
                     }`}
                   >
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-bold text-ink">{service.name}</h3>
-                      <span className="badge badge-blush text-xs px-2 py-1 rounded bg-blush text-espresso">{service.category.replace('_', ' ')}</span>
-                    </div>
-                    <div className="flex justify-between items-end text-sm text-espresso mt-4">
-                      <span>{service.durationMin} mins</span>
-                      <span className="font-medium text-terracotta">
-                        {service.priceType === 'CONSULTATION' ? 'Price on consultation' : `₹${service.priceInr}`}
+                    {selectedService?.id === service.id && (
+                      <span className="absolute top-4 right-4 text-terracotta">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
                       </span>
+                    )}
+                    <div className="flex flex-col h-full">
+                      <div className="mb-2 pr-8">
+                        <h3 className="font-bold text-ink">{service.name}</h3>
+                        <span className="inline-block mt-1 badge badge-blush text-xs px-2 py-0.5 rounded bg-blush/20 text-terracotta font-medium">
+                          {service.category.replace('_', ' ')}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-end text-sm text-espresso mt-auto pt-4">
+                        <span className="flex items-center gap-1">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                          {service.durationMin} mins
+                        </span>
+                        <span className="font-semibold text-terracotta">
+                          {service.priceType === 'CONSULTATION' ? 'Price on consultation' : `₹${service.priceInr}`}
+                        </span>
+                      </div>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
 
@@ -141,6 +159,19 @@ export default function BookPage() {
                 <h1 className="text-3xl font-display text-ink mb-2">Select Date & Time</h1>
                 <p className="text-espresso">All times are in IST (Asia/Kolkata).</p>
               </div>
+
+              {selectedService && (
+                <div className="bg-blush/10 p-4 rounded-lg border border-terracotta/20 flex justify-between items-center mb-6">
+                  <div>
+                    <span className="text-xs font-semibold text-terracotta uppercase tracking-wider block mb-1">Selected Service</span>
+                    <span className="font-bold text-ink">{selectedService.name}</span>
+                    <span className="text-espresso text-sm ml-2">({selectedService.durationMin} mins)</span>
+                  </div>
+                  <button onClick={() => setStep(1)} className="text-sm font-medium text-terracotta underline hover:text-espresso">
+                    Change
+                  </button>
+                </div>
+              )}
 
               <div className="space-y-4">
                 <label className="label block font-medium text-ink">Choose Date</label>

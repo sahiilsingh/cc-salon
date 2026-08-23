@@ -48,26 +48,7 @@ const VALUES = [
   },
 ];
 
-const SAMPLE_REVIEWS = [
-  {
-    initials: "SA",
-    text: "Amazing experience! The staff is so friendly and professional. My hair has never looked better.",
-    platform: "Google",
-    note: "Sample review",
-  },
-  {
-    initials: "PM",
-    text: "Beautiful salon with a warm, welcoming feel. Love their attention to detail and the calm ambience.",
-    platform: "Google",
-    note: "Sample review",
-  },
-  {
-    initials: "RK",
-    text: "The best manicure and pedicure I've had in Goa. Clean, quiet, and the team really cares about their work.",
-    platform: "Google",
-    note: "Sample review",
-  },
-];
+
 
 export default function Home() {
   return (
@@ -169,18 +150,15 @@ export default function Home() {
               A glimpse of our work and studio.
             </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div
-                key={i}
-                className="aspect-square bg-sand rounded-xl flex items-center justify-center text-espresso/40 text-sm text-center p-4"
-              >
-                <div>
-                  <span className="text-3xl block mb-2">📸</span>
-                  Owner-approved images coming soon
-                </div>
-              </div>
-            ))}
+          <div className="bg-sand rounded-2xl p-12 text-center max-w-2xl mx-auto border border-espresso/10">
+            <span className="text-4xl block mb-4">📸</span>
+            <h3 className="font-display text-2xl text-ink mb-3">Our gallery is being refreshed</h3>
+            <p className="text-espresso/70 mb-6">
+              Follow @thecandcsalon on Instagram for our latest work, or book a consultation to discuss your next look.
+            </p>
+            <a href="https://www.instagram.com/thecandcsalon/" target="_blank" rel="noopener noreferrer" className="btn btn-secondary inline-flex">
+              Follow on Instagram
+            </a>
           </div>
           <div className="text-center mt-8">
             <Link href="/gallery" className="btn btn-secondary">
@@ -227,32 +205,19 @@ export default function Home() {
               Based on our 4.9-star Google rating from 80+ reviews
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {SAMPLE_REVIEWS.map((review, i) => (
-              <div key={i} className="card p-6 relative">
-                <span className="badge badge-blush text-xs absolute top-4 right-4">
-                  {review.note}
-                </span>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-full bg-terracotta/20 text-terracotta flex items-center justify-center font-semibold text-sm">
-                    {review.initials}
-                  </div>
-                  <div className="flex gap-0.5">
-                    {[1, 2, 3, 4, 5].map((s) => (
-                      <span key={s} className="text-gold text-sm">
-                        ★
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <p className="text-espresso/80 text-sm italic leading-relaxed">
-                  &ldquo;{review.text}&rdquo;
-                </p>
-                <p className="text-xs text-espresso/50 mt-3">
-                  via {review.platform}
-                </p>
-              </div>
-            ))}
+          <div className="bg-white rounded-2xl p-8 md:p-12 text-center max-w-3xl mx-auto shadow-sm border border-sand">
+            <div className="flex justify-center gap-1 mb-6">
+              {[1, 2, 3, 4, 5].map((s) => (
+                <span key={s} className="text-gold text-2xl">★</span>
+              ))}
+            </div>
+            <h3 className="font-display text-2xl text-ink mb-4">Read our customer stories</h3>
+            <p className="text-espresso/70 mb-8 max-w-lg mx-auto">
+              We pride ourselves on delivering exceptional service. See what our community has to say about their experiences at C&C Salon.
+            </p>
+            <a href="https://www.google.com/maps/place/The+C%26C+House+Of+Hair+%26+Beauty+Salon/" target="_blank" rel="noopener noreferrer" className="btn btn-secondary inline-flex">
+              View latest Google Reviews
+            </a>
           </div>
         </div>
       </section>
@@ -265,12 +230,11 @@ export default function Home() {
             Special Offers
           </h2>
           <p className="text-espresso/60 mb-6">
-            No offers are currently active. The salon owner can activate
-            promotional offers through the admin dashboard.
+            No current offers. Follow us on Instagram or check back soon for seasonal updates.
           </p>
-          <Link href="/offers" className="btn btn-ghost">
-            View offers page →
-          </Link>
+          <a href="https://www.instagram.com/thecandcsalon/" target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
+            Follow on Instagram →
+          </a>
         </div>
       </section>
 

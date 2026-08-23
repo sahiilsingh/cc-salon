@@ -13,7 +13,15 @@
   --success: #2F6B4F;
   --warning: #9A6A1F;
   --danger: #A6403D;
+  --site-header-height: 72px;
 }
+
+@media (max-width: 767px) {
+  :root {
+    --site-header-height: 64px;
+  }
+}
+
 
 @theme inline {
   --color-ink: var(--ink);

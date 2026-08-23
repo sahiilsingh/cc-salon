@@ -16,11 +16,11 @@ export default function Header() {
   }, []);
 
   const navLinks = [
-    { name: 'Services', href: '/#services' },
-    { name: 'Offers', href: '/#offers' },
-    { name: 'Gallery', href: '/#gallery' },
-    { name: 'About', href: '/#about' },
-    { name: 'Contact', href: '/#contact' },
+    { name: 'Services', href: '/services' },
+    { name: 'Offers', href: '/offers' },
+    { name: 'Gallery', href: '/gallery' },
+    { name: 'About', href: '/about' },
+    { name: 'Contact', href: '/contact' },
   ];
 
   return (
@@ -53,10 +53,9 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* Desktop CTA */}
         <div className="hidden md:block">
           <Link
-            href="/#book"
+            href="/book"
             className="inline-flex items-center justify-center px-6 py-2.5 bg-terracotta text-white font-body text-sm font-medium rounded hover:bg-terracotta/90 transition-colors shadow-sm"
           >
             Book now
@@ -107,7 +106,7 @@ export default function Header() {
           
           <div className="mt-auto pb-24">
             <Link
-              href="/#book"
+              href="/book"
               className="w-full inline-flex items-center justify-center px-6 py-4 bg-terracotta text-white font-body text-lg font-medium rounded shadow-sm"
               onClick={() => setIsMobileMenuOpen(false)}
             >
